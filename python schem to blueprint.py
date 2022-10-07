@@ -138,8 +138,8 @@ class Example():
 			self.canvas.moveto(self.canvas.gettags('East'), -25, (lastrec[3]/2)-9)
 			self.canvas.moveto(self.canvas.gettags('West'), lastrec[0]+20, (lastrec[3]/2)-9)
 			#self.canvas.coords(self.canvas.gettags('North'), w/2, 0)  # redraw the rectangle at the given coordinates
-	def ColorPicker(self, color):
-		return tkinter.colorchooser.askcolor(title='Pick a color', color=color)[1]
+			self.GridToggle()
+	def ColorPicker(self, color):return tkinter.colorchooser.askcolor(title='Pick a color', color=color)[1]
 	def Default(self):
 		self.BGColor, self.GridColor, self.BGridColor, self.AC1, self.AC2 = "silver", "black", "", '#BBCBCB', '#97AFAF'
 		self.colorseter()
@@ -247,11 +247,11 @@ class Example():
 		self.GridToggle(True)
 		self.filename = filedialog.askopenfilename(filetypes=[('Sponge schem (*.schem)', '*.schem')], initialdir='./')
 		#load schematic
-		self.sf = amulet_nbt.load(self.filename)
+		self.sf = amulet_nbt.load(self.filename)[1]
 		#x + z * Width + y * Width * Length
 		print('x + z * Width + y * Width * Length')
 		print(f"0 + 0 * {self.sf['Width']} + {self.sf['Height']} * { self.sf['Width']} * {self.sf['Length']}")
-		print(0 + 0 * self.sf['Width'] + self.sf['Height'] * self.sf['Width'] * self.sf['Length'])
+		print(0 + 0 * int(self.sf['Width']) + int(self.sf['Height']) * int(self.sf['Width']) * int(self.sf['Length']))
 
 		self.Palette = {"normal":{}, "modifi":{}, "lamron":{}}
 		#print(self.sf['Palette'])
@@ -302,6 +302,8 @@ class Example():
 			self.trgtbtn = Button(toplevel, text="target...", command=lambda:self.entryset(self.path, toplevel))
 			self.savebtn = Button(toplevel, text="save", command=self.start_thread)
 			self.abortbtn = Button(toplevel, text="abort", command=lambda:toplevel.destroy())
+			self.toplabel = Label(toplevel)
+			self.toplabel.grid(sticky='N', column=0, row=0)
 			self.savebtn.grid(sticky='SE', column=0, row=4)
 			self.abortbtn.grid(sticky='SE', column=1, row=4)
 			self.progress.grid(sticky='N', column=0, row=1)
@@ -311,18 +313,16 @@ class Example():
 		if direction == 'one per layer':
 			self.gif = False
 			toplevel.title("save one image per layer")
-			label = Label(toplevel, text="place holder text")
-			label.grid(sticky='N', column=0, row=0)
+			self.toplabel.config(text="place holder text 1")
 		if direction == 'gif':
 			self.gif = True
 			toplevel.title("save to animated gif")
-			label = Label(toplevel, text="place holder text")
+			self.toplabel.config(text="place holder text 2")
 			label1 = Label(toplevel, text="delay between images in milliseconds")
 			#label2 = Label(toplevel, text="divide the time value by 1000")
 			vcmd = (self.root.register(self.validate), '%d', '%i', '%P', '%s', '%S', '%v', '%V', '%W')
 			self.derent = Entry(toplevel, width=10, validate='key', validatecommand=vcmd)
 			self.derent.insert(0, 1000)
-			label.grid(sticky='N', column=0, row=0)
 			label1.grid(sticky='N', column=0, row=3)
 			#label2.grid(sticky='WN', column=0, row=3)
 			self.derent.grid(sticky='N', column=1, row=3)
@@ -335,11 +335,8 @@ class Example():
 		else:self.thread.join()
 	def validate(self, *args):
 		#print(args)
-		if not args[2].isdigit() or args[2] == '':
-			self.root.bell()
-			return False
-		else:
-			return True
+		return True if args[2].isdigit() or args[2] == '' else False
+		if not args[2].isdigit() or args[2] == '':self.root.bell()
 	def alphareplace(self, oldimg, size=(400, 400)):
 		newimg = Image.new("RGBA", size, self.BGColor)
 		return Image.alpha_composite(newimg, oldimg)
@@ -539,20 +536,20 @@ class Example():
 						splitt = block[1].split('facing=')[1].split(',')[0]
 						replacee = re.sub(r'\[|\]', '', splitt)
 						if re.search("north|south|east|west", replacee):Image.Image.paste(img, Image.open(f"{self.texpath}/piston_side.png"))
-						if replacee == 'north':return img.rotate(0, Image.NEAREST)
-						if replacee == 'south':return img.rotate(180, Image.NEAREST)
-						if replacee == 'east': return img.rotate(-90, Image.NEAREST)
-						if replacee == 'west': return img.rotate(90, Image.NEAREST)
+						if replacee == 'north':return img.rotate(0, Image.Resampling.NEAREST)
+						if replacee == 'south':return img.rotate(180, Image.Resampling.NEAREST)
+						if replacee == 'east': return img.rotate(-90, Image.Resampling.NEAREST)
+						if replacee == 'west': return img.rotate(90, Image.Resampling.NEAREST)
 					elif 'amethyst' in block[0]:
-						if block[1].split('facing=')[1].split(',')[0] == 'north':return img.rotate(0, Image.NEAREST)
-						if block[1].split('facing=')[1].split(',')[0] == 'south':return img.rotate(180, Image.NEAREST)
-						if block[1].split('facing=')[1].split(',')[0] == 'east': return img.rotate(-90, Image.NEAREST)
-						if block[1].split('facing=')[1].split(',')[0] == 'west': return img.rotate(90, Image.NEAREST)
+						if block[1].split('facing=')[1].split(',')[0] == 'north':return img.rotate(0, Image.Resampling.NEAREST)
+						if block[1].split('facing=')[1].split(',')[0] == 'south':return img.rotate(180, Image.Resampling.NEAREST)
+						if block[1].split('facing=')[1].split(',')[0] == 'east': return img.rotate(-90, Image.Resampling.NEAREST)
+						if block[1].split('facing=')[1].split(',')[0] == 'west': return img.rotate(90, Image.Resampling.NEAREST)
 					else:
-						if block[1].split('facing=')[1].split(',')[0] == 'north':return img.rotate(0, Image.NEAREST)
-						if block[1].split('facing=')[1].split(',')[0] == 'south':return img.rotate(180, Image.NEAREST)
-						if block[1].split('facing=')[1].split(',')[0] == 'west': return img.rotate(-90, Image.NEAREST)
-						if block[1].split('facing=')[1].split(',')[0] == 'east': return img.rotate(90, Image.NEAREST)
+						if block[1].split('facing=')[1].split(',')[0] == 'north':return img.rotate(0, Image.Resampling.NEAREST)
+						if block[1].split('facing=')[1].split(',')[0] == 'south':return img.rotate(180, Image.Resampling.NEAREST)
+						if block[1].split('facing=')[1].split(',')[0] == 'west': return img.rotate(-90, Image.Resampling.NEAREST)
+						if block[1].split('facing=')[1].split(',')[0] == 'east': return img.rotate(90, Image.Resampling.NEAREST)
 			if 'torch' in block[0]:
 				splitt = block[1].split('lit=')[1].split(',')[0]
 				replacee = re.sub(r'\[|\]', '', splitt)
@@ -571,10 +568,10 @@ class Example():
 				if north == 'up' and south == 'up' and east == 'up' and west == 'up':#cross, all the same.
 					Image.Image.paste(img, Image.open(f"{self.texpath}/redstone_wire-cross.png"))
 
-				if north == 'side' and south == 'side' and east == 'none' and west == 'none':return img.rotate(90, Image.NEAREST)#straight n-s
-				if north == 'up' and south == 'up' and east == 'none' and west == 'none':return img.rotate(90, Image.NEAREST)#straight n-s, all the same.
-				if north == 'up' and south == 'side' and east == 'none' and west == 'none':return img.rotate(90, Image.NEAREST)#outlier straight n=u - s=s
-				if north == 'side' and south == 'up' and east == 'none' and west == 'none':return img.rotate(90, Image.NEAREST)#outlier straight n=s - s=u
+				if north == 'side' and south == 'side' and east == 'none' and west == 'none':return img.rotate(90, Image.Resampling.NEAREST)#straight n-s
+				if north == 'up' and south == 'up' and east == 'none' and west == 'none':return img.rotate(90, Image.Resampling.NEAREST)#straight n-s, all the same.
+				if north == 'up' and south == 'side' and east == 'none' and west == 'none':return img.rotate(90, Image.Resampling.NEAREST)#outlier straight n=u - s=s
+				if north == 'side' and south == 'up' and east == 'none' and west == 'none':return img.rotate(90, Image.Resampling.NEAREST)#outlier straight n=s - s=u
 
 
 				if north == 'side' and south == 'none' and east == 'side' and west == 'none':corner = ''    #corner n-e
@@ -621,14 +618,14 @@ class Example():
 
 				if corner:
 					Image.Image.paste(img, Image.open(f"{self.texpath}/redstone_wire-corner.png"))
-					if corner == "90": return img.rotate(90, Image.NEAREST)
-					if corner == "-90":return img.rotate(-90, Image.NEAREST)
-					if corner == "180":return img.rotate(180, Image.NEAREST)
+					if corner == "90": return img.rotate(90, Image.Resampling.NEAREST)
+					if corner == "-90":return img.rotate(-90, Image.Resampling.NEAREST)
+					if corner == "180":return img.rotate(180, Image.Resampling.NEAREST)
 				if wireT:
 					Image.Image.paste(img, Image.open(f"{self.texpath}/redstone_wire-t.png"))
-					if wireT == "90": return img.rotate(90, Image.NEAREST)
-					if wireT == "-90":return img.rotate(-90, Image.NEAREST)
-					if wireT == "180":return img.rotate(180, Image.NEAREST)
+					if wireT == "90": return img.rotate(90, Image.Resampling.NEAREST)
+					if wireT == "-90":return img.rotate(-90, Image.Resampling.NEAREST)
+					if wireT == "180":return img.rotate(180, Image.Resampling.NEAREST)
 		except:pass #print(traceback.format_exc())
 	def PixelEditing(self, img, block):
 		try:
@@ -706,7 +703,7 @@ class Example():
 						if facing == 'east': direction = 'west'
 						self.arrowmaker(direction, img)
 					else:
-						if 'repeater' in block[0]:img.rotate(90, Image.NEAREST)
+						if 'repeater' in block[0]:img.rotate(90, Image.Resampling.NEAREST)
 						if facing == 'north':direction = 'north'
 						if facing == 'south':direction = 'south'
 						if facing == 'west': direction = 'east'
