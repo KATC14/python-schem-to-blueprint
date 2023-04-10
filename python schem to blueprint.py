@@ -16,8 +16,8 @@ class Example():
 		self.BGColor = "silver"
 		self.GridColor = "black"
 		self.BGridColor = ""
-		self.AC1 = '#BBCBCB'
-		self.AC2 = '#97AFAF'
+		self.ac1 = '#BBCBCB'
+		self.ac2 = '#97AFAF'
 
 		file = tkinter.Menu(self.menubar, tearoff=0)
 		file.add_command(label="Open file", command=self.fileopen)
@@ -33,8 +33,8 @@ class Example():
 		colors.add_command(label="grid color", command=self.GridColorDef, background=self.GridColor, foreground='white')
 		colors.add_command(label="grid hover color", command=self.BGridColorDef)#, background=self.GridColor
 		counlor = tkinter.Menu(colors, tearoff=0)
-		counlor.add_command(label='alternating color 1', command=lambda:self.altColorsDef(1), background=self.AC1)
-		counlor.add_command(label='alternating color 2', command=lambda:self.altColorsDef(2), background=self.AC2)
+		counlor.add_command(label='alternating color 1', command=lambda:self.altColorsDef(1), background=self.ac1)
+		counlor.add_command(label='alternating color 2', command=lambda:self.altColorsDef(2), background=self.ac2)
 		colors.add_cascade(label="block count colors", menu=counlor)
 		colors.add_command(label="Restore Defaults", command=self.Default)
 		self.menubar.add_cascade(label="colors", menu=colors)
@@ -83,6 +83,7 @@ class Example():
 			self.gridis = True
 			self.misc.entryconfig(0, label=f'Grid is {self.gridis}')
 			for i in self.myGrid:self.canvas.itemconfig(i, state='normal')
+
 	#def thingToggle(self):
 	#	if not self.thing:
 	#		self.thing = True
@@ -91,12 +92,20 @@ class Example():
 	#		self.thing = False
 	#		self.misc.entryconfig(1, label=f'thing is {self.thing}')
 	#	self.createGrid()
+
 	def layerswitch(self, event):
-		if event.keysym == 'Up':self.scale1.set(self.scale1.get() + 1)
-		if event.keysym == 'Down':self.scale1.set(self.scale1.get() - 1)
+		if event.keysym == 'Up':
+			self.scale1.set(self.scale1.get() + 1)
+		if event.keysym == 'Down':
+			self.scale1.set(self.scale1.get() - 1)
+
 	def CompasStyles(self, style):
-		for i in ['North', 'South', 'East', 'West']:self.canvas.delete(i)
-		for i in [self.labelNorth, self.labelSouth, self.labelEast, self.labelWest]:i.grid_forget()
+		for i in ['North', 'South', 'East', 'West']:
+			self.canvas.delete(i)
+
+		for i in [self.labelNorth, self.labelSouth, self.labelEast, self.labelWest]:
+			i.grid_forget()
+
 		if style == 'window':
 			self.style = 'window'
 			self.labelNorth.grid(row=0, column=0, sticky='n')
@@ -141,11 +150,11 @@ class Example():
 			self.GridToggle()
 	def ColorPicker(self, color):return tkinter.colorchooser.askcolor(title='Pick a color', color=color)[1]
 	def Default(self):
-		self.BGColor, self.GridColor, self.BGridColor, self.AC1, self.AC2 = "silver", "black", "", '#BBCBCB', '#97AFAF'
+		self.BGColor, self.GridColor, self.BGridColor, self.ac1, self.ac2 = "silver", "black", "", '#BBCBCB', '#97AFAF'
 		self.colorseter()
 	def altColorsDef(self, direction):
-		if direction == 1:self.AC1 = self.ColorPicker(self.AC1)
-		if direction == 2:self.AC2 = self.ColorPicker(self.AC2)
+		if direction == 1:self.ac1 = self.ColorPicker(self.ac1)
+		if direction == 2:self.ac2 = self.ColorPicker(self.ac2)
 		self.colorseter()
 	def bgcolorDef(self):
 		self.BGColor = self.ColorPicker(self.BGColor)
@@ -161,29 +170,39 @@ class Example():
 		o = round(((r/256 * 299) + (g/256 * 587) + (b/256 * 114)) / 1000)
 		return 'black' if o > 125 else 'white'
 	def colorseter(self):
-		try:self.canvas.configure(bg=self.BGColor)
-		except:pass
+		try:
+			self.canvas.configure(bg=self.BGColor)
+		except:
+			pass
+
 		try:
 			for i in self.myGrid:
 				self.canvas.itemconfig(i, outline=self.GridColor)
-		except:pass
+		except:
+			pass
+
 		try:
 			for i in self.myGrid:
 				#print(self.canvas.itemcget(i))
 				self.canvas.itemconfig(i, activefill=self.BGridColor)#, activefill='blue'
-		except:pass
+		except:
+			pass
+
 		try:
-			self.BCTree.tag_configure('OddRow', background=self.AC1)
-			self.BCTree.tag_configure('EvenRow', background=self.AC2)
-		except:pass
+			self.BCTree.tag_configure('OddRow', background=self.ac1)
+			self.BCTree.tag_configure('EvenRow', background=self.ac2)
+		except:
+			pass
+
 		try:
 			menuchild = self.menubar.winfo_children()[1]
 			menuchild.entryconfigure(0, background=self.BGColor, foreground=self.TCC(self.BGColor))#canvas background color
 			menuchild.entryconfigure(1, background=self.GridColor, foreground=self.TCC(self.GridColor))#grid color
 			menuchild.entryconfigure(2, background=self.BGridColor, foreground=self.TCC(self.BGridColor if self.BGridColor != '' else 'white'))#grid hover color
-			menuchild.winfo_children()[0].entryconfigure(0, background=self.AC1, foreground=self.TCC(self.AC1))#alternating color 1
-			menuchild.winfo_children()[0].entryconfigure(1, background=self.AC2, foreground=self.TCC(self.AC2))#alternating color 2
-		except:pass #print(traceback.format_exc())
+			menuchild.winfo_children()[0].entryconfigure(0, background=self.ac1, foreground=self.TCC(self.ac1))#alternating color 1
+			menuchild.winfo_children()[0].entryconfigure(1, background=self.ac2, foreground=self.TCC(self.ac2))#alternating color 2
+		except:
+			pass #print(traceback.format_exc())
 	#def GetMainColor(self, img):
 	#	colors = img.getcolors(256) #put a higher value if there are many colors in your image
 	#	max_occurence, most_present = 0, 0
@@ -343,7 +362,7 @@ class Example():
 	def layersave(self, direction, hen=None):
 		self.imglist = []
 		if direction == 'current layer':
-			firstrec = self.canvas.bbox(self.myGrid[0])
+			#firstrec = self.canvas.bbox(self.myGrid[0])
 			lastrec  = self.canvas.bbox(self.myGrid[-1])[3]-1
 			imgdraw = Image.new("RGBA", (lastrec, lastrec), self.BGColor)
 			self.draw = ImageDraw.Draw(imgdraw)
@@ -365,7 +384,7 @@ class Example():
 					if self.CheckIntVar.get():self.draw.rectangle((y1,x1,y2,x2), outline=self.GridColor)
 			self.alphareplace(imgdraw, (lastrec, lastrec)).save(hen)
 		if direction == 'giforalllayers':
-			firstrec = self.canvas.bbox(self.myGrid[0])
+			#firstrec = self.canvas.bbox(self.myGrid[0])
 			lastrec  = self.canvas.bbox(self.myGrid[-1])[3]-1
 			for i in range(len(self.b)):
 				imgdraw = Image.new("RGBA", (lastrec, lastrec), self.BGColor)
@@ -441,14 +460,14 @@ class Example():
 			pilImage = ImageTk.PhotoImage(img)
 			self.imagecount.append(pilImage)
 			self.BCTree.insert('','end', image=pilImage, values=(value, key.replace('minecraft:', ''), ''))#self.Palette['modifi'][thingset[i]]['name']
-		self.BCTree.tag_configure('OddRow', background=self.AC1)
-		self.BCTree.tag_configure('EvenRow', background=self.AC2)
+		self.BCTree.tag_configure('OddRow', background=self.ac1)
+		self.BCTree.tag_configure('EvenRow', background=self.ac2)
 		self.treeview_sort_column(self.BCTree, 'Amount', False)
 	def treeview_sort_column(self, tv, col, reverse):
 		l = [(tv.set(k, col), k) for k in tv.get_children('')]
 		l.sort(key=lambda e:int(e[0]) if e[0].isdigit() else e[0], reverse=reverse)
 
-		for index, (val, k) in enumerate(l):
+		for index, (_, k) in enumerate(l):
 			tv.move(k, '', index)
 		tag = "OddRow"
 		for iid in tv.get_children(""):
@@ -498,7 +517,7 @@ class Example():
 
 			self.canvas.configure(scrollregion = self.canvas.bbox("all"))
 			if self.style == 'grid':self.CompasStyles('grid')
-		except Exception as e:print(traceback.format_exc())
+		except:print(traceback.format_exc())
 
 	#def BlockColor(self, GridSquare, block):
 	#	kcolb = block.split('[')
@@ -524,109 +543,111 @@ class Example():
 			blocktex = self.canvas.create_image(yxyx[0], yxyx[1], image=pilImage, anchor='nw', tag=block)
 			self.canvas.lower(blocktex)#makes grid above images
 	def ImageManipulate(self, img, block):
-		try:
-			#[blacklist := True if i in block[0] else False for i in ['piston_head', 'torch', 'sign']]
-			blacklist = False
-			for i in ['piston_head', 'torch', 'sign', 'ladder', 'campfire', 'door']:
-				if i in block[0]:
-					blacklist = True
-			if len(block) != 1:
-				if 'facing' in block[1] and not blacklist:
-					if 'piston' in block[0]:#controls piston side
-						splitt = block[1].split('facing=')[1].split(',')[0]
-						replacee = re.sub(r'\[|\]', '', splitt)
-						if re.search("north|south|east|west", replacee):Image.Image.paste(img, Image.open(f"{self.texpath}/piston_side.png"))
-						if replacee == 'north':return img.rotate(0, Image.Resampling.NEAREST)
-						if replacee == 'south':return img.rotate(180, Image.Resampling.NEAREST)
-						if replacee == 'east': return img.rotate(-90, Image.Resampling.NEAREST)
-						if replacee == 'west': return img.rotate(90, Image.Resampling.NEAREST)
-					elif 'amethyst' in block[0]:
-						if block[1].split('facing=')[1].split(',')[0] == 'north':return img.rotate(0, Image.Resampling.NEAREST)
-						if block[1].split('facing=')[1].split(',')[0] == 'south':return img.rotate(180, Image.Resampling.NEAREST)
-						if block[1].split('facing=')[1].split(',')[0] == 'east': return img.rotate(-90, Image.Resampling.NEAREST)
-						if block[1].split('facing=')[1].split(',')[0] == 'west': return img.rotate(90, Image.Resampling.NEAREST)
-					else:
-						if block[1].split('facing=')[1].split(',')[0] == 'north':return img.rotate(0, Image.Resampling.NEAREST)
-						if block[1].split('facing=')[1].split(',')[0] == 'south':return img.rotate(180, Image.Resampling.NEAREST)
-						if block[1].split('facing=')[1].split(',')[0] == 'west': return img.rotate(-90, Image.Resampling.NEAREST)
-						if block[1].split('facing=')[1].split(',')[0] == 'east': return img.rotate(90, Image.Resampling.NEAREST)
-			if 'torch' in block[0]:
+		#try:
+		#[blacklist := True if i in block[0] else False for i in ['piston_head', 'torch', 'sign']]
+		blacklist = False
+		for i in ['piston_head', 'torch', 'sign', 'ladder', 'campfire', 'door']:
+			if i in block[0]:
+				blacklist = True
+		if len(block) != 1:
+			if 'facing' in block[1] and not blacklist:
+				if 'piston' in block[0]:#controls piston side
+					splitt = block[1].split('facing=')[1].split(',')[0]
+					replacee = re.sub(r'\[|\]', '', splitt)
+					if re.search("north|south|east|west", replacee):Image.Image.paste(img, Image.open(f"{self.texpath}/piston_side.png"))
+					if replacee == 'north':return img.rotate(0, Image.Resampling.NEAREST)
+					if replacee == 'south':return img.rotate(180, Image.Resampling.NEAREST)
+					if replacee == 'east': return img.rotate(-90, Image.Resampling.NEAREST)
+					if replacee == 'west': return img.rotate(90, Image.Resampling.NEAREST)
+				elif 'amethyst' in block[0]:
+					if block[1].split('facing=')[1].split(',')[0] == 'north':return img.rotate(0, Image.Resampling.NEAREST)
+					if block[1].split('facing=')[1].split(',')[0] == 'south':return img.rotate(180, Image.Resampling.NEAREST)
+					if block[1].split('facing=')[1].split(',')[0] == 'east': return img.rotate(-90, Image.Resampling.NEAREST)
+					if block[1].split('facing=')[1].split(',')[0] == 'west': return img.rotate(90, Image.Resampling.NEAREST)
+				else:
+					if block[1].split('facing=')[1].split(',')[0] == 'north':return img.rotate(0, Image.Resampling.NEAREST)
+					if block[1].split('facing=')[1].split(',')[0] == 'south':return img.rotate(180, Image.Resampling.NEAREST)
+					if block[1].split('facing=')[1].split(',')[0] == 'west': return img.rotate(-90, Image.Resampling.NEAREST)
+					if block[1].split('facing=')[1].split(',')[0] == 'east': return img.rotate(90, Image.Resampling.NEAREST)
+		if 'torch' in block[0]:
+			if len(block) > 1:
 				splitt = block[1].split('lit=')[1].split(',')[0]
 				replacee = re.sub(r'\[|\]', '', splitt)
 				if replacee == 'true':Image.Image.paste(img, Image.open(f"{self.texpath}/redstone_torch_lit.png"))
-			if 'redstone_wire' in block[0]:
-				north = re.search("(?:north)=(?:none|side|up)", block[1]).group().split('=')[1]
-				south = re.search("(?:south)=(?:none|side|up)", block[1]).group().split('=')[1]
-				east  =  re.search("(?:east)=(?:none|side|up)", block[1]).group().split('=')[1]
-				west  =  re.search("(?:west)=(?:none|side|up)", block[1]).group().split('=')[1]
+		if 'redstone_wire' in block[0]:
+			north = re.search("(?:north)=(?:none|side|up)", block[1]).group().split('=')[1]
+			south = re.search("(?:south)=(?:none|side|up)", block[1]).group().split('=')[1]
+			east  =  re.search("(?:east)=(?:none|side|up)", block[1]).group().split('=')[1]
+			west  =  re.search("(?:west)=(?:none|side|up)", block[1]).group().split('=')[1]
 
-				wireT = False
-				corner = False
+			wireT = False
+			corner = False
 
-				if north == 'side' and south == 'side' and east == 'side' and west == 'side':#cross
-					Image.Image.paste(img, Image.open(f"{self.texpath}/redstone_wire-cross.png"))
-				if north == 'up' and south == 'up' and east == 'up' and west == 'up':#cross, all the same.
-					Image.Image.paste(img, Image.open(f"{self.texpath}/redstone_wire-cross.png"))
+			if north == 'side' and south == 'side' and east == 'side' and west == 'side':#cross
+				Image.Image.paste(img, Image.open(f"{self.texpath}/redstone_wire-cross.png"))
+			if north == 'up' and south == 'up' and east == 'up' and west == 'up':#cross, all the same.
+				Image.Image.paste(img, Image.open(f"{self.texpath}/redstone_wire-cross.png"))
 
-				if north == 'side' and south == 'side' and east == 'none' and west == 'none':return img.rotate(90, Image.Resampling.NEAREST)#straight n-s
-				if north == 'up' and south == 'up' and east == 'none' and west == 'none':return img.rotate(90, Image.Resampling.NEAREST)#straight n-s, all the same.
-				if north == 'up' and south == 'side' and east == 'none' and west == 'none':return img.rotate(90, Image.Resampling.NEAREST)#outlier straight n=u - s=s
-				if north == 'side' and south == 'up' and east == 'none' and west == 'none':return img.rotate(90, Image.Resampling.NEAREST)#outlier straight n=s - s=u
-
-
-				if north == 'side' and south == 'none' and east == 'side' and west == 'none':corner = ''    #corner n-e
-				if north == 'side' and south == 'none' and east == 'none' and west == 'side':corner = '90'  #corner n-w
-				if north == 'none' and south == 'side' and east == 'side' and west == 'none':corner = '-90' #corner s-e
-				if north == 'none' and south == 'side' and east == 'none' and west == 'side':corner = '180' #corner s-w
-
-				if north == 'side' and south == 'none' and east == 'up' and west == 'side':wireT = ''    #outlier t n=s - e=u - w=s
-				if north == 'side' and south == 'up' and east == 'none' and west == 'side':wireT = '90'  #outlier t n=s - s=u - w=s
-				if north == 'up' and south == 'side' and east == 'side' and west == 'none':wireT = '-90' #outlier t n=u - s=s - e=s
-				if north == 'none' and south == 'side' and east == 'side' and west == 'up':wireT = '180' #outlier t s=s - e=s - w=u
-
-				if north == 'side' and south == 'none' and east == 'side' and west == 'up':wireT = ''    #outlier t n=s - e=s - w=u
-				if north == 'up' and south == 'side' and east == 'none' and west == 'side':wireT = '90'  #outlier t n=u - s=s - w=s
-				if north == 'side' and south == 'up' and east == 'side' and west == 'none':wireT = '-90' #outlier t n=s - s=u - e=s
-				if north == 'none' and south == 'side' and east == 'up' and west == 'side':wireT = '180' #outlier t s=s - e=u - w=s
+			if north == 'side' and south == 'side' and east == 'none' and west == 'none':return img.rotate(90, Image.Resampling.NEAREST)#straight n-s
+			if north == 'up' and south == 'up' and east == 'none' and west == 'none':return img.rotate(90, Image.Resampling.NEAREST)#straight n-s, all the same.
+			if north == 'up' and south == 'side' and east == 'none' and west == 'none':return img.rotate(90, Image.Resampling.NEAREST)#outlier straight n=u - s=s
+			if north == 'side' and south == 'up' and east == 'none' and west == 'none':return img.rotate(90, Image.Resampling.NEAREST)#outlier straight n=s - s=u
 
 
-				if north == 'up' and south == 'none' and east == 'up' and west == 'none':corner = ''    #corner n-e, all the same.
-				if north == 'up' and south == 'none' and east == 'none' and west == 'up':corner = '90'  #corner n-w, all the same.
-				if north == 'none' and south == 'up' and east == 'up' and west == 'none':corner = '-90' #corner s-e, all the same.
-				if north == 'none' and south == 'up' and east == 'none' and west == 'up':corner = '180' #corner s-w, all the same.
+			if north == 'side' and south == 'none' and east == 'side' and west == 'none': corner = ''    #corner n-e
+			if north == 'side' and south == 'none' and east == 'none' and west == 'side': corner = '90'  #corner n-w
+			if north == 'none' and south == 'side' and east == 'side' and west == 'none': corner = '-90' #corner s-e
+			if north == 'none' and south == 'side' and east == 'none' and west == 'side': corner = '180' #corner s-w
 
-				if north == 'side' and south == 'none' and east == 'up' and west == 'none':corner = ''    #corner n=s - e=u
-				if north == 'side' and south == 'none' and east == 'none' and west == 'up':corner = '90'  #corner n=s - w=u
-				if north == 'none' and south == 'side' and east == 'up' and west == 'none':corner = '-90' #corner s=s - e=u
-				if north == 'none' and south == 'side' and east == 'none' and west == 'up':corner = '180' #corner s=s - w=u
+			if north == 'side' and south == 'none' and east == 'up'   and west == 'side': wireT = ''    #outlier t n=s - e=u - w=s
+			if north == 'side' and south == 'up'   and east == 'none' and west == 'side': wireT = '90'  #outlier t n=s - s=u - w=s
+			if north == 'up'   and south == 'side' and east == 'side' and west == 'none': wireT = '-90' #outlier t n=u - s=s - e=s
+			if north == 'none' and south == 'side' and east == 'side' and west == 'up':   wireT = '180' #outlier t s=s - e=s - w=u
 
-				if north == 'side' and south == 'none' and east == 'up' and west == 'up':wireT = ''# t n=s - e=u - w=u
-				if north == 'up' and south == 'up' and east == 'none' and west == 'side':wireT = '90'# t n=u - s=u - w=s
-				if north == 'up' and south == 'up' and east == 'side' and west == 'none':wireT = '-90'# t n=u - s=u - e=s
-				if north == 'none' and south == 'side' and east == 'up' and west == 'up':wireT = '180'# t s=s - e=u - w=u
-
-				if north == 'up' and south == 'none' and east == 'side' and west == 'side':wireT = ''    # t
-				if north == 'side' and south == 'side' and east == 'none' and west == 'up':wireT = '90'  # t n=s - s=s - w=u
-				if north == 'side' and south == 'side' and east == 'up' and west == 'none':wireT = '-90' # t n=s - s=s - e=u
-				if north == 'none' and south == 'up' and east == 'side' and west == 'side':wireT = '180' # t s=u - e=s - w=s
+			if north == 'side' and south == 'none' and east == 'side' and west == 'up':   wireT = ''    #outlier t n=s - e=s - w=u
+			if north == 'up'   and south == 'side' and east == 'none' and west == 'side': wireT = '90'  #outlier t n=u - s=s - w=s
+			if north == 'side' and south == 'up'   and east == 'side' and west == 'none': wireT = '-90' #outlier t n=s - s=u - e=s
+			if north == 'none' and south == 'side' and east == 'up'   and west == 'side': wireT = '180' #outlier t s=s - e=u - w=s
 
 
-				if north == 'side' and south == 'none' and east == 'side' and west == 'side':wireT = ''    # t n-e-w
-				if north == 'side' and south == 'side' and east == 'none' and west == 'side':wireT = '90'  # t n-s-w
-				if north == 'side' and south == 'side' and east == 'side' and west == 'none':wireT = '-90' # t n-s-e
-				if north == 'none' and south == 'side' and east == 'side' and west == 'side':wireT = '180' # t s-e-w
+			if north == 'up'   and south == 'none' and east == 'up'   and west == 'none': corner = ''    #corner n-e, all the same.
+			if north == 'up'   and south == 'none' and east == 'none' and west == 'up':   corner = '90'  #corner n-w, all the same.
+			if north == 'none' and south == 'up'   and east == 'up'   and west == 'none': corner = '-90' #corner s-e, all the same.
+			if north == 'none' and south == 'up'   and east == 'none' and west == 'up':   corner = '180' #corner s-w, all the same.
 
-				if corner:
-					Image.Image.paste(img, Image.open(f"{self.texpath}/redstone_wire-corner.png"))
-					if corner == "90": return img.rotate(90, Image.Resampling.NEAREST)
-					if corner == "-90":return img.rotate(-90, Image.Resampling.NEAREST)
-					if corner == "180":return img.rotate(180, Image.Resampling.NEAREST)
-				if wireT:
-					Image.Image.paste(img, Image.open(f"{self.texpath}/redstone_wire-t.png"))
-					if wireT == "90": return img.rotate(90, Image.Resampling.NEAREST)
-					if wireT == "-90":return img.rotate(-90, Image.Resampling.NEAREST)
-					if wireT == "180":return img.rotate(180, Image.Resampling.NEAREST)
-		except:pass #print(traceback.format_exc())
+			if north == 'side' and south == 'none' and east == 'up'   and west == 'none': corner = ''    #corner n=s - e=u
+			if north == 'side' and south == 'none' and east == 'none' and west == 'up':   corner = '90'  #corner n=s - w=u
+			if north == 'none' and south == 'side' and east == 'up'   and west == 'none': corner = '-90' #corner s=s - e=u
+			if north == 'none' and south == 'side' and east == 'none' and west == 'up':   corner = '180' #corner s=s - w=u
+
+			if north == 'side' and south == 'none' and east == 'up'   and west == 'up':   wireT = ''# t n=s - e=u - w=u
+			if north == 'up'   and south == 'up'   and east == 'none' and west == 'side': wireT = '90'# t n=u - s=u - w=s
+			if north == 'up'   and south == 'up'   and east == 'side' and west == 'none': wireT = '-90'# t n=u - s=u - e=s
+			if north == 'none' and south == 'side' and east == 'up'   and west == 'up':   wireT = '180'# t s=s - e=u - w=u
+
+			if north == 'up'   and south == 'none' and east == 'side' and west == 'side': wireT = ''    # t
+			if north == 'side' and south == 'side' and east == 'none' and west == 'up':   wireT = '90'  # t n=s - s=s - w=u
+			if north == 'side' and south == 'side' and east == 'up'   and west == 'none': wireT = '-90' # t n=s - s=s - e=u
+			if north == 'none' and south == 'up'   and east == 'side' and west == 'side': wireT = '180' # t s=u - e=s - w=s
+
+
+			if north == 'side' and south == 'none' and east == 'side' and west == 'side': wireT = ''    # t n-e-w
+			if north == 'side' and south == 'side' and east == 'none' and west == 'side': wireT = '90'  # t n-s-w
+			if north == 'side' and south == 'side' and east == 'side' and west == 'none': wireT = '-90' # t n-s-e
+			if north == 'none' and south == 'side' and east == 'side' and west == 'side': wireT = '180' # t s-e-w
+
+			if corner:
+				Image.Image.paste(img, Image.open(f"{self.texpath}/redstone_wire-corner.png"))
+				if corner == "90": return img.rotate(90, Image.Resampling.NEAREST)
+				if corner == "-90":return img.rotate(-90, Image.Resampling.NEAREST)
+				if corner == "180":return img.rotate(180, Image.Resampling.NEAREST)
+			if wireT:
+				Image.Image.paste(img, Image.open(f"{self.texpath}/redstone_wire-t.png"))
+				if wireT == "90": return img.rotate(90, Image.Resampling.NEAREST)
+				if wireT == "-90":return img.rotate(-90, Image.Resampling.NEAREST)
+				if wireT == "180":return img.rotate(180, Image.Resampling.NEAREST)
+		#except:
+		#	pass #print(traceback.format_exc())
 	def PixelEditing(self, img, block):
 		try:
 			width, height = img.size
